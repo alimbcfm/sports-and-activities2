@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports activities2</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .main-container {
+            width: 98vw;
+            height: 98vh;
+            position: relative;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .sports-image {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        /* توقيع الأستاذ علي عسيري - مكبر ومصمم خصيصاً للجوال والأجهزة اللوحية */
+        .author-badge {
+            position: absolute;
+            top: 10px;
+            left: 12%;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #ffeb3b;
+            padding: 8px 20px;
+            font-size: 19px;
+            font-weight: bold;
+            border-radius: 22px;
+            border: 2.5px solid #ffeb3b;
+            z-index: 3000;
+            pointer-events: none;
+            direction: rtl;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+
+        /* أزرار التحكم - مكبرة لتناسب اللمس وسهولة الاستخدام للجوال والأيباد */
+        .controls-header {
+            position: absolute;
+            top: 10px;
+            right: 4%;
+            display: flex;
+            gap: 12px;
+            z-index: 3000;
+        }
+
+        .mode-btn {
+            padding: 10px 24px;
+            font-size: 19px;
+            font-weight: bold;
+            color: #ffffff;
+            border: 3px solid #ffffff;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            transition: transform 0.2s, background-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .mode-btn:hover {
+            transform: scale(1.06);
+        }
+
+        .btn-practice {
+            background-color: #22c55e; /* أخضر */
+        }
+
+        .btn-test {
+            background-color: #ef4444; /* أحمر */
+        }
+
+        /* دعم الشاشات الصغيرة والأيباد والجوالات لتفادي التداخل */
+        @media (max-width: 1024px) {
+            .author-badge {
+                font-size: 14px;
+                padding: 6px 12px;
+                left: 8%;
+                top: 6px;
+            }
+            .controls-header {
+                gap: 6px;
+                right: 2%;
+                top: 6px;
+            }
+            .mode-btn {
+                padding: 6px 12px;
+                font-size: 14px;
+                border-width: 2px;
+            }
+        }
+
+        /* الطبقة التفاعلية */
+        .hotspots-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hotspot {
+            position: absolute;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s, border 0.2s;
+        }
+
+        .hotspot:hover {
+            background-color: rgba(255, 235, 59, 0.25);
+            border: 2px dashed #f59e0b;
+        }
+
+        /* النافذة المنبثقة لرسالة نهاية التدريب */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 6000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-box {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 30px 50px;
+            border-radius: 25px;
+            text-align: center;
+            color: #fff;
+            border: 4px solid #ffeb3b;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            animation: popIn 0.4s ease;
+            min-width: 320px;
+            direction: rtl;
+        }
+
+        .modal-title {
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffeb3b;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .modal-subtitle {
+            font-size: 22px;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .modal-ok-btn {
+            background: #ffeb3b;
+            color: #000;
+            border: none;
+            padding: 10px 40px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: 0.2s;
+        }
+
+        .modal-ok-btn:hover {
+            background: #fff;
+            transform: scale(1.08);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.4); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* صفحة الاختبار المنبثقة الترحيبية */
+        .test-welcome-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px);
+            z-index: 7000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .test-welcome-card {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            padding: 35px 50px;
+            border-radius: 30px;
+            text-align: center;
+            color: #ffffff;
+            border: 4px solid #fde047;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 380px;
+            max-width: 90%;
+            direction: rtl;
+        }
+
+        .test-welcome-title {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #fde047;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+        }
+
+        .test-welcome-desc {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #ffffff;
+            line-height: 1.6;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
+        }
+
+        .start-test-btn {
+            background: linear-gradient(135deg, #fde047 0%, #eab308 100%);
+            color: #1e1b4b;
+            border: 3px solid #ffffff;
+            padding: 14px 45px;
+            font-size: 26px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+            transition: all 0.25s ease;
+            outline: none;
+        }
+
+        .start-test-btn:hover {
+            transform: scale(1.08);
+            background: linear-gradient(135deg, #ffffff 0%, #fde047 100%);
+            box-shadow: 0 10px 25px rgba(253, 224, 71, 0.5);
+        }
+
+        /* نافذة شاشة الاختبار بالمستطيل الأصفر الموسع (96vw و 96vh) */
+        .test-screen-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 8000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .test-screen-card {
+            width: 96vw;
+            height: 96vh;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 4px solid #fde047;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: relative;
+            overflow-y: auto;
+            direction: rtl;
+        }
+
+        .test-question-header {
+            width: 100%;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(253, 224, 71, 0.3);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .test-question-tracker {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .test-question-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fde047;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            direction: ltr;
+            display: inline-block;
+        }
+
+        .test-options-grid {
+            width: 100%;
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: 1fr;
+            gap: 15px;
+            padding: 10px 0;
+            align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .test-options-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(2, 1fr);
+            }
+        }
+
+        .test-option-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid #38bdf8;
+            border-radius: 18px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            height: 100%;
+            position: relative;
+        }
+
+        .test-option-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: #fde047;
+            box-shadow: 0 12px 28px rgba(253, 224, 71, 0.35);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .test-option-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 10px;
+        }
+
+        .test-result-box {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .test-result-finished-text {
+            font-size: 42px;
+            font-weight: 800;
+            color: #fde047;
+            margin-bottom: 25px;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        }
+
+        .show-result-btn {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: #ffffff;
+            border: 3px solid #ffffff;
+            padding: 16px 45px;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .show-result-btn:hover {
+            transform: scale(1.08);
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+        }
+
+        .test-final-evaluation {
+            font-size: 38px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 20px;
+            padding: 15px 35px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #fde047;
+            animation: popIn 0.5s ease;
+        }
+
+        /* نافذة تأكيد الخروج */
+        .test-exit-top-btn {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            background: #ef4444;
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 3px 12px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .test-exit-top-btn:hover {
+            transform: scale(1.08);
+            background: #dc2626;
+        }
+
+        .exit-confirm-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            z-index: 9500;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .exit-confirm-card {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            padding: 30px 45px;
+            border-radius: 28px;
+            text-align: center;
+            color: #ffffff;
+            border: 4px solid #fde047;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+            animation: popIn 0.35s ease;
+            min-width: 350px;
+            direction: rtl;
+        }
+
+        .exit-confirm-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: #fde047;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        .exit-confirm-btns {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .exit-btn-ok {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 10px 32px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .exit-btn-ok:hover {
+            transform: scale(1.08);
+        }
+
+        .exit-btn-cancel {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            border: 2px solid #ffffff;
+            padding: 10px 32px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .exit-btn-cancel:hover {
+            transform: scale(1.08);
+        }
+
+        /* تنسيقات اختبار2 */
+        .test2-options-grid {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 0;
+        }
+
+        .test2-option-card {
+            width: 75%;
+            max-width: 500px;
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            border: 3px solid #fde047;
+            border-radius: 12px;
+            padding: 6px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
+        }
+
+        .test2-option-card:hover {
+            transform: scale(1.03);
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            box-shadow: 0 6px 15px rgba(253, 224, 71, 0.4);
+        }
+
+        .test2-option-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- توقيع المصمم -->
+        <div class="author-badge">تصميم الأستاذ علي عسيري</div>
+
+        <!-- أزرار التحكم -->
+        <div class="controls-header">
+            <button class="mode-btn btn-practice" onclick="startPracticeMode()">تدريب 🎯</button>
+            <button class="mode-btn btn-test" onclick="startTestMode()">اختبار 📝</button>
+            <button class="mode-btn" style="background-color: #f59e0b;" onclick="startTest2Mode()">اختبار2 📝</button>
+        </div>
+
+        <!-- عرض الصورة ثابتة -->
+        <img src="sports and activities2.png" alt="Sports activities2" class="sports-image" id="sportsImg" onerror="this.src='sports and activities2.jpg'">
+
+        <!-- المربعات الشفافة التفاعلية -->
+        <div class="hotspots-overlay">
+            <!-- العناوين الرئيسية -->
+            <div class="hotspot" style="top: 3.2%; left: 39.0%; width: 22.0%; height: 3.8%;" onclick="handleItemClick('ballsports.mp3', 'Ball Sports')"></div>
+            <div class="hotspot" style="top: 8.2%; left: 44.0%; width: 12.0%; height: 3.8%;" onclick="handleItemClick('play.mp3', 'Play')"></div>
+
+            <!-- Ball Sports Items -->
+            <div class="hotspot" style="top: 12.5%; left: 2.8%; width: 17.8%; height: 21.5%;" onclick="handleItemClick('tennis.mp3', 'Play Tennis')"></div>
+            <div class="hotspot" style="top: 12.5%; left: 21.2%; width: 19.0%; height: 21.5%;" onclick="handleItemClick('volleyball.mp3', 'Play Volleyball')"></div>
+            <div class="hotspot" style="top: 12.5%; left: 40.8%; width: 19.0%; height: 21.5%;" onclick="handleItemClick('basketball.mp3', 'Play Basketball')"></div>
+            <div class="hotspot" style="top: 12.5%; left: 60.5%; width: 19.0%; height: 21.5%;" onclick="handleItemClick('football.mp3', 'Play Football')"></div>
+            <div class="hotspot" style="top: 12.5%; left: 79.2%; width: 19.0%; height: 21.5%;" onclick="handleItemClick('golf.mp3', 'Play Golf')"></div>
+
+            <!-- Individual Sports Header -->
+            <div class="hotspot" style="top: 36.2%; left: 36.5%; width: 27.0%; height: 3.8%;" onclick="handleItemClick('individualsports.mp3', 'Individual Sports')"></div>
+
+            <!-- Individual Sports Items -->
+            <div class="hotspot" style="top: 41.5%; left: 1.5%; width: 23.5%; height: 22.0%;" onclick="handleItemClick('ski.mp3', 'Go Skiing')"></div>
+            <div class="hotspot" style="top: 41.5%; left: 25.5%; width: 24.5%; height: 22.0%;" onclick="handleItemClick('snowboard.mp3', 'Snowboard')"></div>
+            <div class="hotspot" style="top: 41.5%; left: 50.5%; width: 24.5%; height: 22.0%;" onclick="handleItemClick('ride a horse.mp3', 'Ride a horse')"></div>
+            <div class="hotspot" style="top: 41.5%; left: 74.5%; width: 24.0%; height: 22.0%;" onclick="handleItemClick('jog.mp3', 'Go Jogging')"></div>
+
+            <!-- Other Activities Headers -->
+            <div class="hotspot" style="top: 65.2%; left: 38.7%; width: 22.5%; height: 3.8%;" onclick="handleItemClick('otheractivities.mp3', 'Other Activities')"></div>
+            <div class="hotspot" style="top: 70.5%; left: 39.0%; width: 22.0%; height: 4.8%;" onclick="handleItemClick('doplay.mp3', 'Do or Play')"></div>
+
+            <!-- Other Activities Items -->
+            <div class="hotspot" style="top: 75.5%; left: 1.5%; width: 23.5%; height: 22.0%;" onclick="handleItemClick('pottery.mp3', 'Do Pottery')"></div>
+            <div class="hotspot" style="top: 75.5%; left: 25.5%; width: 24.5%; height: 22.0%;" onclick="handleItemClick('painting.mp3', 'Do Painting')"></div>
+            <div class="hotspot" style="top: 75.5%; left: 50.5%; width: 24.5%; height: 22.0%;" onclick="handleItemClick('computer games.mp3', 'Play Computer Games')"></div>
+            <div class="hotspot" style="top: 75.5%; left: 74.5%; width: 24.0%; height: 22.0%;" onclick="handleItemClick('word games.mp3', 'Play Word Games')"></div>
+        </div>
+
+        <!-- النافذة المنبثقة لانتهاء التدريب -->
+        <div id="finishModal" class="modal-overlay">
+            <div class="modal-box">
+                <div class="modal-title">أحسنت يا بطل! 🎉</div>
+                <div class="modal-subtitle">لقد أتممت الجولة التدريبية بنجاح 🌟</div>
+                <button class="modal-ok-btn" onclick="closeFinishModal()">موافق</button>
+            </div>
+        </div>
+
+        <!-- نافذة الترحيب المشتركة للاختبارات -->
+        <div id="testWelcomeModal" class="test-welcome-overlay">
+            <div class="test-welcome-card">
+                <div class="test-welcome-title" id="welcomeModalTitle">اختبار الرياضات والأنشطة 🏆</div>
+                <div class="test-welcome-desc" id="welcomeModalDesc">هل أنت مستعد لاختبار معلوماتك واكتشاف مستوى إتقانك؟</div>
+                <button class="start-test-btn" id="welcomeStartBtn" onclick="onStartTestClick()">لنبدأ الاختبار 🚀</button>
+            </div>
+        </div>
+
+        <!-- شاشة عرض الأسئلة المشتركة -->
+        <div id="testScreenOverlay" class="test-screen-overlay">
+            <div class="test-screen-card" id="testScreenCard">
+                <div class="test-question-header" id="testQuestionHeader">
+                    <button class="test-exit-top-btn" onclick="openExitConfirmModal()">✖ خروج</button>
+                    <div class="test-question-tracker" id="testQuestionTracker">السؤال 1 من 13</div>
+                    <div class="test-question-title" id="testQuestionTitle">Play Tennis</div>
+                </div>
+
+                <div class="test-options-grid" id="testOptionsGrid"></div>
+            </div>
+        </div>
+
+        <!-- نافذة تأكيد الخروج -->
+        <div id="exitConfirmModal" class="exit-confirm-overlay">
+            <div class="exit-confirm-card">
+                <div class="exit-confirm-title">خروج من الاختبار ⚠️</div>
+                <div class="exit-confirm-btns">
+                    <button class="exit-btn-ok" onclick="confirmCancelTest()">ok</button>
+                    <button class="exit-btn-cancel" onclick="confirmContinueTest()">cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentMode = 'normal';
+        let currentTarget = null;
+        let practiceQueue = [];
+        let testQuestionsQueue = [];
+        let testCurrentQuestionIndex = 0;
+        let testScore = 0;
+        let currentActiveTest = 'test1';
+        let isProcessingTestClick = false;
+        let currentPlayingAudio = null; // متغير عام لحفظ الصوت الحالي وإيقافه لمنع التداخل
+
+        const itemsList = [
+            { audio: 'tennis.mp3', text: 'I Play Tennis', image: 'tennis.png', category: 'ball sports', catAudio: 'ballsports.mp3' },
+            { audio: 'volleyball.mp3', text: 'I Play Volleyball', image: 'volleyball.png', category: 'ball sports', catAudio: 'ballsports.mp3' },
+            { audio: 'basketball.mp3', text: 'I Play Basketball', image: 'basketball.png', category: 'ball sports', catAudio: 'ballsports.mp3' },
+            { audio: 'football.mp3', text: 'I Play Football', image: 'football.png', category: 'ball sports', catAudio: 'ballsports.mp3' },
+            { audio: 'golf.mp3', text: 'I Play Golf', image: 'golf.png', category: 'ball sports', catAudio: 'ballsports.mp3' },
+            { audio: 'ski.mp3', text: 'I Ski', image: 'ski.png', category: 'individual sports', catAudio: 'individualsports.mp3' },
+            { audio: 'snowboard.mp3', text: 'I Snowboard', image: 'snowboard.png', category: 'individual sports', catAudio: 'individualsports.mp3' },
+            { audio: 'ride a horse.mp3', text: 'I Ride a horse', image: 'ride a horse.png', category: 'individual sports', catAudio: 'individualsports.mp3' },
+            { audio: 'jog.mp3', text: 'I Jog', image: 'jog.png', category: 'individual sports', catAudio: 'individualsports.mp3' },
+            { audio: 'pottery.mp3', text: 'I Do Pottery', image: 'pottery.png', category: 'other activities', catAudio: 'otheractivities.mp3' },
+            { audio: 'painting.mp3', text: 'I Do Painting', image: 'painting.png', category: 'other activities', catAudio: 'otheractivities.mp3' },
+            { audio: 'computer games.mp3', text: 'I Play Computer Games', image: 'computer games.png', category: 'other activities', catAudio: 'otheractivities.mp3' },
+            { audio: 'word games.mp3', text: 'I Play Word Games', image: 'word games.png', category: 'other activities', catAudio: 'otheractivities.mp3' }
+        ];
+
+        function shuffleArray(array) {
+            let shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function stopCurrentAudio() {
+            if (currentPlayingAudio) {
+                currentPlayingAudio.pause();
+                currentPlayingAudio.currentTime = 0;
+                currentPlayingAudio = null;
+            }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function startPracticeMode() {
+            currentMode = 'practice';
+            practiceQueue = shuffleArray(itemsList);
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            if (practiceQueue.length > 0) {
+                const currentItem = practiceQueue.pop();
+                currentTarget = currentItem.text;
+                playAudio(currentItem.audio);
+            } else {
+                showFinishModal();
+            }
+        }
+
+        function showFinishModal() {
+            playAudio('good.mp3');
+            document.getElementById('finishModal').style.display = 'flex';
+        }
+
+        function closeFinishModal() {
+            document.getElementById('finishModal').style.display = 'none';
+            startPracticeMode();
+        }
+
+        function handleItemClick(audioFile, text) {
+            if (currentMode === 'normal') {
+                playAudio(audioFile);
+            } else if (currentMode === 'practice') {
+                if (text === currentTarget) {
+                    playAudio('good.mp3');
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 1200);
+                } else {
+                    playAudio('try again.mp3');
+                }
+            }
+        }
+
+        function playAudio(filename) {
+            stopCurrentAudio();
+            const audio = new Audio(filename);
+            currentPlayingAudio = audio;
+            audio.play().catch(() => {});
+            return audio;
+        }
+
+        function playAudioAsync(filename) {
+            return new Promise((resolve) => {
+                stopCurrentAudio();
+                const audio = new Audio(filename);
+                currentPlayingAudio = audio;
+                
+                audio.onended = () => {
+                    currentPlayingAudio = null;
+                    resolve();
+                };
+                audio.onerror = () => {
+                    currentPlayingAudio = null;
+                    resolve();
+                };
+                audio.play().catch(() => {
+                    currentPlayingAudio = null;
+                    resolve();
+                });
+                
+                // مهلة أمان لضمان عدم تعليق الشاشة
+                setTimeout(() => {
+                    if (currentPlayingAudio === audio) {
+                        currentPlayingAudio = null;
+                        resolve();
+                    }
+                }, 4000);
+            });
+        }
+
+        function startTestMode() {
+            currentActiveTest = 'test1';
+            document.getElementById('welcomeModalTitle').innerText = 'اختبار الرياضات والأنشطة 🏆';
+            document.getElementById('testWelcomeModal').style.display = 'flex';
+        }
+
+        function startTest2Mode() {
+            currentActiveTest = 'test2';
+            document.getElementById('welcomeModalTitle').innerText = 'اختبار تصنيف الرياضات (اختبار2) 🏆';
+            document.getElementById('testWelcomeModal').style.display = 'flex';
+        }
+
+        function onStartTestClick() {
+            document.getElementById('testWelcomeModal').style.display = 'none';
+            if (currentActiveTest === 'test1') {
+                initTestSession();
+            } else if (currentActiveTest === 'test2') {
+                initTest2Session();
+            }
+        }
+
+        function initTestSession() {
+            currentMode = 'test';
+            testScore = 0;
+            testCurrentQuestionIndex = 0;
+            isProcessingTestClick = false;
+            stopCurrentAudio();
+            testQuestionsQueue = shuffleArray(itemsList);
+
+            document.getElementById('testScreenOverlay').style.display = 'flex';
+            renderTestQuestion();
+        }
+
+        function renderTestQuestion() {
+            isProcessingTestClick = false;
+            stopCurrentAudio();
+            const currentItem = testQuestionsQueue[testCurrentQuestionIndex];
+            
+            document.getElementById('testQuestionTracker').innerText = `السؤال ${testCurrentQuestionIndex + 1} من ${testQuestionsQueue.length}`;
+            document.getElementById('testQuestionTitle').innerText = currentItem.text;
+
+            playAudioAsync(currentItem.audio);
+            
+            const wrongOptions = itemsList.filter(item => item.text !== currentItem.text);
+            const shuffledWrong = shuffleArray(wrongOptions).slice(0, 3);
+            const fourOptions = shuffleArray([currentItem, ...shuffledWrong]);
+
+            const optionsGrid = document.getElementById('testOptionsGrid');
+            optionsGrid.className = 'test-options-grid';
+            optionsGrid.innerHTML = '';
+
+            fourOptions.forEach(opt => {
+                const card = document.createElement('div');
+                card.className = 'test-option-card';
+                card.onclick = () => onSelectImageInTest(opt, currentItem.text);
+
+                const img = document.createElement('img');
+                img.src = opt.image;
+                img.alt = opt.text;
+                img.onerror = function() { this.src = 'sports and activities2.png'; };
+
+                card.appendChild(img);
+                optionsGrid.appendChild(card);
+            });
+        }
+
+        // اختبار 1: نطق الصورة المختارة بالكامل وعدم الانتقال إلا بعد انتهائها تماماً بدون تداخل
+        function onSelectImageInTest(selectedOption, correctText) {
+            if (isProcessingTestClick) return;
+            isProcessingTestClick = true;
+
+            const isCorrect = (selectedOption.text === correctText);
+
+            playAudioAsync(selectedOption.audio).then(() => {
+                selectTestAnswer(isCorrect);
+            });
+        }
+
+        function initTest2Session() {
+            currentMode = 'test';
+            testScore = 0;
+            testCurrentQuestionIndex = 0;
+            isProcessingTestClick = false;
+            stopCurrentAudio();
+            testQuestionsQueue = shuffleArray(itemsList);
+
+            document.getElementById('testScreenOverlay').style.display = 'flex';
+            renderTest2Question();
+        }
+
+        function renderTest2Question() {
+            isProcessingTestClick = false;
+            stopCurrentAudio();
+            const currentItem = testQuestionsQueue[testCurrentQuestionIndex];
+            
+            document.getElementById('testQuestionTracker').innerText = `السؤال ${testCurrentQuestionIndex + 1} من ${testQuestionsQueue.length}`;
+            document.getElementById('testQuestionTitle').innerText = "ما هو تصنيف هذه اللعبة؟";
+
+            // نطق اسم اللعبة تلقائياً عند ظهور السؤال (مع منع أي تداخل سابق)
+            playAudioAsync(currentItem.audio);
+
+            const categories = [
+                { name: 'ball sports', audio: 'ballsports.mp3' },
+                { name: 'individual sports', audio: 'individualsports.mp3' },
+                { name: 'other activities', audio: 'otheractivities.mp3' }
+            ];
+            const shuffledCategories = shuffleArray(categories);
+
+            const optionsGrid = document.getElementById('testOptionsGrid');
+            optionsGrid.className = 'test2-options-grid';
+            optionsGrid.innerHTML = '';
+
+            const imgCard = document.createElement('div');
+            imgCard.style.width = '340px';
+            imgCard.style.height = '340px';
+            imgCard.style.maxHeight = '40vh';
+            imgCard.style.margin = '0 auto';
+            imgCard.style.background = 'rgba(255,255,255,0.08)';
+            imgCard.style.border = '4px solid #38bdf8';
+            imgCard.style.borderRadius = '20px';
+            imgCard.style.display = 'flex';
+            imgCard.style.justifyContent, imgCard.style.alignItems = 'center', 'center';
+            imgCard.style.boxShadow = '0 8px 20px rgba(0,0,0,0.4)';
+            imgCard.style.flexShrink = '0';
+
+            const img = document.createElement('img');
+            img.src = currentItem.image;
+            img.alt = currentItem.text;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'contain';
+            img.style.padding = '8px';
+            img.onerror = function() { this.src = 'sports and activities2.png'; };
+
+            imgCard.appendChild(img);
+            optionsGrid.appendChild(imgCard);
+
+            shuffledCategories.forEach(cat => {
+                const optCard = document.createElement('div');
+                optCard.className = 'test2-option-card';
+                optCard.onclick = () => selectTest2Answer(cat.name === currentItem.category, cat.audio);
+
+                const textDiv = document.createElement('div');
+                textDiv.className = 'test2-option-text';
+                textDiv.innerText = cat.name;
+
+                optCard.appendChild(textDiv);
+                optionsGrid.appendChild(optCard);
+            });
+        }
+
+        // اختبار 2: نطق التصنيف المختار والانتظار حتى ينتهي الصوت تماماً قبل الانتقال للسؤال التالي
+        function selectTest2Answer(isCorrect, audioFile) {
+            if (isProcessingTestClick) return;
+            isProcessingTestClick = true;
+
+            playAudioAsync(audioFile).then(() => {
+                selectTestAnswer(isCorrect);
+            });
+        }
+
+        function selectTestAnswer(isCorrect) {
+            if (isCorrect) {
+                testScore++;
+            }
+
+            testCurrentQuestionIndex++;
+
+            if (testCurrentQuestionIndex < testQuestionsQueue.length) {
+                if (currentActiveTest === 'test1') {
+                    renderTestQuestion();
+                } else {
+                    renderTest2Question();
+                }
+            } else {
+                showTestFinishedScreen();
+            }
+        }
+
+        function showTestFinishedScreen() {
+            stopCurrentAudio();
+            const card = document.getElementById('testScreenCard');
+            card.className = 'test-screen-card';
+            card.innerHTML = `
+                <div class="test-result-box">
+                    <div class="test-result-finished-text">انتهى الاختبار 🏁</div>
+                    <button class="show-result-btn" onclick="revealTestResult()">إظهار النتيجة 📊</button>
+                    <div id="evaluationDisplay"></div>
+                </div>
+            `;
+        }
+
+        function revealTestResult() {
+            let evaluationText = "";
+            
+            if (testScore < 5) {
+                evaluationText = `درجتك: ${testScore} من 13 <br> تدرب جيداً 💡`;
+            } else if (testScore >= 5 && testScore < 8) {
+                evaluationText = `درجتك: ${testScore} من 13 <br> جيد 👍`;
+            } else if (testScore >= 8 && testScore < 13) {
+                evaluationText = `درجتك: ${testScore} من 13 <br> جيد جداً 🌟`;
+            } else if (testScore === 13) {
+                evaluationText = `درجتك: ${testScore} من 13 <br> رائع مبدع ممتاز 🏆`;
+            }
+
+            const evalDiv = document.getElementById('evaluationDisplay');
+            evalDiv.className = 'test-final-evaluation';
+            evalDiv.innerHTML = evaluationText;
+
+            const btn = document.querySelector('.show-result-btn');
+            if(btn) btn.style.display = 'none';
+
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'show-result-btn';
+            closeBtn.style.marginTop = '25px';
+            closeBtn.style.background = '#ef4444';
+            closeBtn.innerText = 'إغلاق الاختبار ✖️';
+            closeBtn.onclick = () => {
+                document.getElementById('testScreenOverlay').style.display = 'none';
+                location.reload();
+            };
+            evalDiv.appendChild(document.createElement('br'));
+            evalDiv.appendChild(closeBtn);
+        }
+
+        function openExitConfirmModal() {
+            document.getElementById('exitConfirmModal').style.display = 'flex';
+        }
+
+        function confirmContinueTest() {
+            document.getElementById('exitConfirmModal').style.display = 'none';
+        }
+
+        function confirmCancelTest() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
+
+<div id="expiryOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:99999; justify-content:center; align-items:center;">
+    <div style="background:linear-gradient(135deg, #e74c3c, #c0392b); padding:40px; border-radius:20px; text-align:center; color:white; box-shadow:0 10px 30px rgba(0,0,0,0.7); max-width:450px; width:90%; border:4px solid #fff;">
+        <h2 style="font-size:30px; margin-bottom:15px; text-shadow:2px 2px 4px rgba(0,0,0,0.4);">رسالة تنبيه</h2>
+        <p style="font-size:20px; margin-bottom:25px; font-weight:bold;">تم تعطيل البرنامج</p>
+        <button onclick="closeApp()" style="background-color:#2ecc71; color:white; border:2px solid white; padding:10px 30px; font-size:18px; font-weight:bold; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.3); transition:0.2s;">موافق</button>
+    </div>
+</div>
+
+<script>
+    // حدد هنا تاريخ ووقت التعطيل بدقة (السنة، الشهر (من 0 إلى 11)، اليوم، الساعة، الدقيقة، الثانية)
+    // مثال هنا مضبوط ليتعطل في: 31 ديسمبر 2026، الساعة 12:00 ليلاً
+    const expiryDate = new Date(2026, 11, 31, 0, 0, 0).getTime();
+
+    function checkProgramExpiry() {
+        const now = new Date().getTime();
+        if (now >= expiryDate) {
+            // إظهار نافذة التعطيل وجعل الشاشة غير نشطة
+            document.getElementById('expiryOverlay').style.display = 'flex';
+            // منع التفاعل مع أي عنصر خلف النافذة
+            document.body.style.pointerEvents = 'none';
+            document.getElementById('expiryOverlay').style.pointerEvents = 'auto';
+        }
+    }
+
+    // دالة زر الموافق (لإغلاق أو إنهاء الصفحة)
+    function closeApp() {
+        window.close();
+        // احتياطاً في حال لم تغلُق نافذة المتصفح تلقائياً
+        document.body.innerHTML = "<h1 style='color:white; text-align:center; margin-top:20vh;'>تم إغلاق البرنامج نهائياً.</h1>";
+    }
+
+    // فحص التاريخ كل ثانية
+    setInterval(checkProgramExpiry, 1000);
+    // فحص فوري عند فتح الصفحة
+    window.onload = checkProgramExpiry;
+</script>
+
